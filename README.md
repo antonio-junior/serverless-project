@@ -11,7 +11,7 @@ npm install -g serverless
 serverless config credentials --provider aws --key <KEY> --secret <SECRET_KEY> --profile <PROFILE_ALIAS>
 ```
 
-Create nem project
+Create new project
 ```
 serverless create --template aws-nodejs --path serveless-project
 ```
