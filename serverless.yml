@@ -19,6 +19,17 @@ provider:
         - dynamodb:*
         - s3:*
       Resource: '*'
+  apiKeys:
+    - free:
+      - freeApiKey
+  usagePlan:
+    - free:
+        quota:
+          limit: 5
+          period: DAY
+        throttle:
+          rateLimit: 5
+          burstLimit: 20
 
 plugins:
   - serverless-s3-sync
@@ -43,6 +54,7 @@ functions:
           path: get-user/{ID}
           method: GET
           cors: true
+          private: true
   getPlayerScore:
     handler: lambdas/getPlayerScore.handler
     events:
