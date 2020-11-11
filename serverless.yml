@@ -10,7 +10,7 @@ provider:
   environment:
     tableName: ${self:custom.tableName}
     bucketName: ${self:custom.bucketName}
-    region: ${self:custom.region}
+    queueName: ${self:custom.queueName}
   apiGateway:
     shouldStartNameWithService: true
   iamRoleStatements:
@@ -18,6 +18,7 @@ provider:
       Action:
         - dynamodb:*
         - s3:*
+        - sqs:*
       Resource: '*'
   apiKeys:
     - free:
@@ -40,10 +41,10 @@ package:
 
 custom:
   tableName: player-points
-  bucketName: serveless-project-dev-hello-bucket
-  region: us-east-1
+  bucketName: serveless-project-dev-bucket
+  queueName: serveless-project-sqs
   s3Sync:
-      - bucketName: serveless-project-dev-hello-bucket
+      - bucketName: ${self:custom.bucketName}
         localDir: UploadData
 
 functions:
@@ -86,10 +87,24 @@ functions:
             - prefix: uploads/
             - suffix: .txt
           existing: true
+  processFile:
+    handler: lambdas/processFile.handler
+    events:
+      - s3:
+          bucket: ${self:custom.bucketName}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: files/
+            - suffix: .txt
+          existing: true
 
 resources:
  Resources:
-   NewResource:
+   MyQueue:
+     Type: "AWS::SQS::Queue"
+     Properties:
+       QueueName: ${self:custom.queueName}
+   MyS3Bucket:
      Type: AWS::S3::Bucket
      Properties:
        BucketName: ${self:custom.bucketName}

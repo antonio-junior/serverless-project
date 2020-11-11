@@ -1,4 +1,5 @@
 import S3 from './services/S3';
+import SQS from './services/SQS';
 import util from 'util';
 
 exports.handler = async event => {
@@ -7,7 +8,7 @@ exports.handler = async event => {
 
     const bucket = event.Records[0].s3.bucket.name;
     const origiKeyName = event.Records[0].s3.object.key;
-    const [fileName] = origiKeyName.split('/').reverse();
+    const fileName = origiKeyName.split('/')[1];
 
     // Download from S3 source bucket. 
     let origiFile = null;
@@ -17,16 +18,16 @@ exports.handler = async event => {
         console.log(error);
         return;
     }
-   
-    // Upload a new file
-    let putResult = null;
-    const destKeyName = `copies/${fileName}`;
+
+    const queueName = process.env.queueName;
+    let messageId = null;
+
     try {
-        putResult = await S3.write(origiFile.Body, destKeyName, bucket);
+        messageId = await SQS.send(origiFile.Body.toString('utf-8'), queueName);
     } catch (error) {
         console.log(error);
         return;
     } 
         
-    console.log(`File copied from ${origiKeyName} to ${destKeyName} at bucket ${bucket}`);
+    console.log(`Message sent to ${queueName}. MessageId: ${messageId}`);
 };

@@ -27,7 +27,7 @@ export default {
 
         if (!newData) throw new Error('Error adding data to S3');
 
-        const fileAdded = `https://${bucket}.s3.${process.env.region}.amazonaws.com/${fileName}`
+        const fileAdded = `https://${bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`
 
         return fileAdded;
     }

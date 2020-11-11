@@ -9,9 +9,9 @@ export default {
             Key: { ID }
         }
 
-        const data = await documentClient.get(params).promise();
+        const {Item} = await documentClient.get(params).promise();
 
-        if (!data || !data.Item) throw new Error('Error fetching data');
+        if (!Item) throw new Error('Error fetching data');
 
         console.log(data);
 
