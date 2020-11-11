@@ -76,6 +76,16 @@ functions:
           path: create-file/{fileName}
           method: POST
           cors: true
+  copyS3File:
+    handler: lambdas/copyS3File.handler
+    events:
+      - s3:
+          bucket: ${self:custom.bucketName}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploads/
+            - suffix: .txt
+          existing: true
 
 resources:
  Resources:
