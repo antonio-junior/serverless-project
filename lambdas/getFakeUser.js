@@ -7,5 +7,5 @@ exports.handler = async event => {
         return Response._400(JSON.stringify({ message: 'missing ID' }));
     }
 
-    return Response._200(JSON.stringify({ message: 'request OK' }));
+    return Response._200(JSON.stringify({user: { Name: 'John', Score: 20 }}));
 };

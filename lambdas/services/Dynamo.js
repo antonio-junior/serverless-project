@@ -1,6 +1,6 @@
 import { DynamoDB } from 'aws-sdk';
 
-const documentClient = new DynamoDB.DocumentClient();
+const ddb = new DynamoDB.DocumentClient();
 
 export default {
     async get (ID, TableName) {
@@ -9,13 +9,13 @@ export default {
             Key: { ID }
         }
 
-        const {Item} = await documentClient.get(params).promise();
+        const { Item: item } = await ddb.get(params).promise();
 
-        if (!Item) throw new Error('Error fetching data');
+        if (!item) throw new Error('Error fetching data');
 
-        console.log(data);
+        console.log(item);
 
-        return data.Item;
+        return item;
     },
 
     async set (data, TableName) {
@@ -23,12 +23,12 @@ export default {
             TableName,
             Item: data
         }
+        
+        const res = await ddb.put(params).promise();
 
-        const res = await documentClient.put(params).promise();
+        console.log('dynamo response', res);
 
         if (!res) throw new Error('Error adding data');
-
-        console.log(res);
 
         return data;
     }

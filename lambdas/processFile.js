@@ -8,7 +8,6 @@ exports.handler = async event => {
 
     const bucket = event.Records[0].s3.bucket.name;
     const origiKeyName = event.Records[0].s3.object.key;
-    const fileName = origiKeyName.split('/')[1];
 
     // Download from S3 source bucket. 
     let origiFile = null;

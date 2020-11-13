@@ -2,22 +2,58 @@ import { SQS } from 'aws-sdk';
 
 const sqsClient = new SQS();
 
+const getQueueUrl = async queueName => {
+    const { QueueUrl: queueUrl } = await sqsClient.getQueueUrl({ QueueName: queueName }).promise();
+
+    if (!queueUrl) throw new Error(`Queue Not Found: ${queueName}`);
+
+    return queueUrl;
+}
+
 export default {
-    async send (data, queueName) {
-        const { QueueUrl } = await sqsClient.getQueueUrl({ QueueName: queueName }).promise();
+    async read (queueName) {
+        const queueUrl = await getQueueUrl(queueName);
+
+        const params = {
+            MaxNumberOfMessages: 2,
+            QueueUrl: queueUrl
+        }
         
-        if (!QueueUrl) throw new Error(`Queue Not Found: ${queueName}`);
+        const { Messages: messages } = await sqsClient.receiveMessage(params).promise();
+
+        if (!messages) console.log(`No messages available at queue ${queueName}`)
+
+        return messages;
+    },
+
+    async delete (queueName, receiptHandle) {
+        const queueUrl = await getQueueUrl(queueName);
+
+        const params = {
+            QueueUrl: queueUrl,
+            ReceiptHandle: receiptHandle
+        }
+        
+        const data = await sqsClient.deleteMessage(params).promise();
+
+        if (!data) throw new Error('Error deleting message from SQS');
+
+        return data;
+    },
+
+    async send (data, queueName) {
+        const queueUrl = await getQueueUrl(queueName);
 
         const params = {
             DelaySeconds: 30,
             MessageBody: data,
-            QueueUrl
+            QueueUrl: queueUrl
         };
          
-        const {MessageId} = await sqsClient.sendMessage(params).promise();
+        const { MessageId: messageId } = await sqsClient.sendMessage(params).promise();
 
-        if (!MessageId) throw new Error('Error sending message to SQS');
+        if (!messageId) throw new Error('Error sending message to SQS');
 
-        return MessageId;
+        return messageId;
     }
 }

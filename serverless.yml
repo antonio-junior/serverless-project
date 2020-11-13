@@ -6,7 +6,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   profile: serverlessUser
-  region: ${self:custom.region}
+  region: us-east-1
   environment:
     tableName: ${self:custom.tableName}
     bucketName: ${self:custom.bucketName}
@@ -48,8 +48,8 @@ custom:
         localDir: UploadData
 
 functions:
-  getUser:
-    handler: lambdas/getUser.handler
+  getFakeUser:
+    handler: lambdas/getFakeUser.handler
     events:
       - http:
           path: get-user/{ID}
@@ -70,23 +70,6 @@ functions:
           path: set-player-score
           method: POST
           cors: true
-  createFile:
-    handler: lambdas/createFile.handler
-    events:
-      - http:
-          path: create-file/{fileName}
-          method: POST
-          cors: true
-  copyS3File:
-    handler: lambdas/copyS3File.handler
-    events:
-      - s3:
-          bucket: ${self:custom.bucketName}
-          event: s3:ObjectCreated:*
-          rules:
-            - prefix: uploads/
-            - suffix: .txt
-          existing: true
   processFile:
     handler: lambdas/processFile.handler
     events:
@@ -97,6 +80,14 @@ functions:
             - prefix: files/
             - suffix: .txt
           existing: true
+  saveContent:
+    handler: lambdas/saveContent.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - MyQueue
+              - Arn
 
 resources:
  Resources:
