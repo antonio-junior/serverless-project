@@ -15,7 +15,7 @@ export default {
         const queueUrl = await getQueueUrl(queueName);
 
         const params = {
-            MaxNumberOfMessages: 2,
+            MaxNumberOfMessages: 1,
             QueueUrl: queueUrl
         }
         
