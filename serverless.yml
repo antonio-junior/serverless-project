@@ -11,7 +11,7 @@ provider:
     tableName: ${self:custom.tableName}
     bucketName: ${self:custom.bucketName}
     queueName: ${self:custom.queueName}
-    emailSender: ${self:custom.emailSender}
+    email: ${self:custom.email}
   apiGateway:
     shouldStartNameWithService: true
   iamRoleStatements:
@@ -45,7 +45,7 @@ custom:
   tableName: player-points
   bucketName: serveless-project-dev-bucket
   queueName: serveless-project-sqs
-  emailSender: acsjunior1@gmail.com
+  email: acsjunior1@gmail.com
   s3Sync:
       - bucketName: ${self:custom.bucketName}
         localDir: UploadData
@@ -153,7 +153,7 @@ resources:
    TopicCloudwatchAlarmSubscription:
      Type: AWS::SNS::Subscription
      Properties:
-      Endpoint: acsjunior1@gmail.com
+      Endpoint: ${self:custom.email}
       Protocol: email
       TopicArn:
         Ref: TopicCloudwatchAlarm

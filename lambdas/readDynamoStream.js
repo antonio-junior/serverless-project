@@ -7,14 +7,14 @@ exports.handler = async event => {
 
     
     const [{ eventName, dynamodb: { NewImage: { Email: { S: mailTo } } } }] = event.Records;
-    const { emailSender } = process.env;
+    const { email } = process.env;
     const subject = 'Register Confirmation';
     const content = 'Thanks for your registration.';
 
     if (eventName !== 'INSERT' || !mailTo) return; 
 
     try {
-        await SES.send(emailSender, mailTo, subject, content);
+        await SES.send(email, mailTo, subject, content);
     } catch (error) {
         console.log(error);
         return;
