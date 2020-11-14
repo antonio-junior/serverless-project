@@ -31,5 +31,20 @@ export default {
         if (!res) throw new Error('Error adding data');
 
         return data;
-    }
+    },
+
+    async delete (ID, TableName) {
+        const params = { 
+            TableName,
+            Key: ID
+        }
+
+        const itemDeleted = await ddb.delete(params).promise();
+
+        if (!itemDeleted) throw new Error('Error deleting data');
+
+        console.log(itemDeleted);
+
+        return itemDeleted;
+    },
 }

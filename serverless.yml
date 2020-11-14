@@ -66,6 +66,14 @@ functions:
           method: POST
           cors: true
           private: true
+  deletePlayer:
+    handler: lambdas/deletePlayer.handler
+    events:
+      - http:
+          path: delete-player
+          method: POST
+          cors: true
+          private: true
   processFile:
     handler: lambdas/processFile.handler
     events:
@@ -86,6 +94,7 @@ functions:
               - Arn
   dynamodb-trigger:
     handler: lambdas/readDynamoStream.handler
+    maximumRetryAttempts: 0
     events:
       - stream:
           type: dynamodb
@@ -116,6 +125,35 @@ resources:
        KeySchema:
           - AttributeName: ID
             KeyType: HASH
-       BillingMode: PAY_PER_REQUEST
+       ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
        StreamSpecification:
         StreamViewType: NEW_IMAGE
+   DynamoDBAlarmConsumedReadUnits:
+     Type: AWS::CloudWatch::Alarm
+     Properties:
+      AlarmDescription: DynamoDB ConsumedReadUnits
+      Namespace: AWS/DynamoDB
+      MetricName: ConsumedReadCapacityUnits
+      Statistic: Sum
+      Threshold: 0
+      ComparisonOperator: GreaterThanThreshold
+      EvaluationPeriods: 1
+      Period: 60
+      Dimensions:
+        - Name: TableName
+          Value: ${self:custom.tableName}
+      AlarmActions:
+        - Ref: TopicCloudwatchAlarm
+   TopicCloudwatchAlarm:
+     Type: AWS::SNS::Topic
+     Properties:
+      TopicName: ${self:service}-dev-topic-cloudwatch-alarm
+   TopicCloudwatchAlarmSubscription:
+     Type: AWS::SNS::Subscription
+     Properties:
+      Endpoint: acsjunior1@gmail.com
+      Protocol: email
+      TopicArn:
+        Ref: TopicCloudwatchAlarm
