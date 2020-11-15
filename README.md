@@ -2,6 +2,13 @@
 
 Personal project to play with serverless framework
 
+## Serverless Framework Documentation
+https://www.serverless.com/framework/docs/
+
+
+## Application Architecture
+<img src="images/diagram.png"> 
+
 ## Useful commands
 
 Setup serverless framework
@@ -16,12 +23,21 @@ Create new project
 serverless create --template aws-nodejs --path serveless-project
 ```
 
-Deploy application
+Deploy this application
 ```
-sls deploy
-```
+sls deploy --email <EMAIL>
 
-Deploy function
+optional: --stage prod (dev is default)
+```
+>**< EMAIL> is the veriified e-mail used as a sender*
+
+
+Deploy a single function
 ```
 sls deploy -f <functionName>
+```
+
+Display information about the service
+```
+sls info -v
 ```
