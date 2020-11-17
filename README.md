@@ -44,7 +44,7 @@ sls deploy --email <EMAIL>
 
 optional: --stage prod (dev is default)
 ```
->****< EMAIL> is the verified e-mail used to send the messages**
+>**< EMAIL> is the verified e-mail used to send the messages*
 
 
 Deploy a single function
