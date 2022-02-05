@@ -1,5 +1,17 @@
 import Dynamo from './services/Dynamo';
 import util from 'util';
+import Joi from 'joi';
+
+const validator = async data => {
+    const schema = Joi.object({
+        ID: Joi.string(),
+        name: Joi.string().max(10).min(4).required(),
+        score: Joi.number().integer().min(0).required(),
+        email: Joi.string().email().required()
+    });
+
+    return schema.validateAsync(data);
+}
 
 exports.handler = async event => {
     // Read options from the event parameter.
@@ -10,7 +22,9 @@ exports.handler = async event => {
     const [{ body }] = event.Records;
 
     try {
-        await Dynamo.set(JSON.parse(body), tableName);    
+        const data = JSON.parse(body);
+        await validator(data);
+        await Dynamo.set(data, tableName);    
     } catch (error) {
         console.log(error);
         return;

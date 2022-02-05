@@ -1,3 +1,5 @@
+org: antoniojunior
+app: serverless-project
 service: serveless-project
 
 frameworkVersion: '2'
