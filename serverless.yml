@@ -2,7 +2,7 @@ org: antoniojunior
 app: serverless-project
 service: serveless-project
 
-frameworkVersion: '2'
+frameworkVersion: '3'
 
 provider:
   name: aws
@@ -16,25 +16,27 @@ provider:
     email: ${self:custom.email}
   apiGateway:
     shouldStartNameWithService: true
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:*
-        - s3:*
-        - sqs:*
-        - ses:*
-      Resource: '*'
-  apiKeys:
-    - free:
-      - freeApiKey
-  usagePlan:
-    - free:
-        quota:
-          limit: 50
-          period: DAY
-        throttle:
-          rateLimit: 5
-          burstLimit: 20
+    apiKeys:
+      - free:
+        - freeApiKey
+    usagePlan:
+      - free:
+          quota:
+            limit: 50
+            period: DAY
+          throttle:
+            rateLimit: 5
+            burstLimit: 20
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:*
+            - s3:*
+            - sqs:*
+            - ses:*
+          Resource: '*'
 
 plugins:
   - serverless-s3-sync
@@ -47,7 +49,7 @@ custom:
   tableName: player-points
   bucketName: serveless-project-${opt:stage, 'dev'}-bucket
   queueName: serveless-project-sqs
-  email: ${opt:email}
+  email: ${opt:email, ''}
   s3Sync:
       - bucketName: ${self:custom.bucketName}
         localDir: UploadData

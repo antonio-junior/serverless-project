@@ -1,0 +1,23 @@
+{
+  "name": "serverless-project",
+  "version": "1.0.0",
+  "description": "Personal project to play with serverless framework",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antonio-junior/serverless-project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/antonio-junior/serverless-project/issues"
+  },
+  "homepage": "https://github.com/antonio-junior/serverless-project#readme",
+  "dependencies": {
+    "joi": "^17.6.0",
+    "serverless-s3-sync": "^2.0.0"
+  }
+}
