@@ -40,6 +40,8 @@ serverless create --template aws-nodejs --path serveless-project
 
 Deploy this application
 ```
+npm install
+
 sls deploy --email <EMAIL>
 
 optional: --stage prod (dev is default)
